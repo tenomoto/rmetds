@@ -1,0 +1,39 @@
+# プレゼンテーション
+
+[Quarto](https://quarto.org/)を使うとRのコードや実行結果を埋め込んだレポートやプレゼンテーション、ウェブページを作成することができます。
+ここでは、ウェブブラウザで表示する[Revealjs](https://quarto.org/docs/presentations/revealjs/)プレゼンテーションを作ってみよう。
+
+タイトルや著者、作成するドキュメントの種類はヘッダと呼ばれる部分に書きます。
+文書の中身は[Markdown](https://quarto.org/docs/authoring/markdown-basics.html)という形式で書きます。
+
+- スライドの見出しの前には`##`、箇条書きは`-`で並べます。
+- 文中の数式は`$`で別行立ての数式は`$$`で囲み、LaTeXの記法で書きます。
+- [R](https://quarto.org/docs/computations/r.html)のコードと結果を入れることもできます。
+
+
+```` markdown
+---
+title: タイトル
+author: 名前
+format: revealjs
+---
+
+## スライドの見出し
+
+- 箇条書き
+- 次の項目
+
+## 数式
+
+$$
+g(z) = \frac{GM}{(a+z)^2}
+$$
+
+## Rのコード
+
+```{{r}}
+df <- read.csv("co2_annual_20221026.csv")
+plot(df$year, df$co2.global.mean.ppm., main="Global Mean CO2 concentration", xlab="year", ylab="CO2 ppm")
+```
+````
+

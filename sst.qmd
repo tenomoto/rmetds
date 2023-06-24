@@ -1,0 +1,64 @@
+# 海面水温
+
+気象庁の海面水温データMGDSSTを可視化してみます。
+MGDSSTは[NEAR-GOOS](https://www.data.jma.go.jp/gmd/goos/data/pub/JMA-product/)から提供されています。
+[ここ](https://www.data.jma.go.jp/gmd/goos/data/pub/JMA-product/mgd_sst_glb_D/)から2022年6月19日の全球日平均海面水温をダウンロードし作業ディレクトリに移します。
+
+データの1行目は日付と行と列の数が書かれています。
+MGDSSTでは1地点の海面水温（℃）の10倍を3文字で表しています。
+0.125E, 89.875Nから北西から南東に向かってデータが並んでいます。
+海氷は888、陸は999で表されています。
+
+```{r}
+fname <- "mgd_sst_glb_D20220618.txt.gz"
+nlon <- 1440
+nlat <- 720
+dlon <- 360 / nlon
+dlat <- 180 / nlat
+df <- read.fwf(gzfile(fname), widths=rep(3, nlon), header=F, skip=1, nrow=nlat, na.strings=c("888", "999")) # <1>
+```
+
+
+1. 固定形式のテキストファイルを読む函数`read.fwf()`を使って読みます。要素を繰り返す`rep()`を用いて3を1440個並べたベクトルを`widths`に与えます。ヘッダを使わないので`header=F`とします。`nrow=nlat`は行の数として緯度の数を与えています。海氷と陸は非数`NA`とするため`na.strings=c("888", "999")`を渡します。
+
+```{r}
+sst <- t(as.matrix(df)[nrow(df):1,]) * 0.1 # <1>
+lon <- seq(0+dlon/2, 360-dlon/2, dlon) # <2>
+lat <- seq(-90+dlat/2, 90-dlat/2, dlat) # <3>
+filled.contour(lon, lat, sst) # <4>
+```
+
+1. 読んだデータを行列に変換し、南から並べ替え転置して、0.1倍します。
+2. 経度を定義します。
+3. 緯度を定義します。
+4. `filled.contour()`で等値線を描きます。
+
+日本域に限定して描いてみましょう。
+西と東の端の経度に対応するインデックスを探します。
+
+```{r}
+lon0 <- 120
+lon1 <- 150
+i0 <- which.min(abs(lon - lon0))
+i1 <- which.min(abs(lon - lon1))
+```
+
+同様に南北の端も決めます。
+
+```{r}
+lat0 <-  20
+lat1 <-  50
+j0 <- which.min(abs(lat - lat0))
+j1 <- which.min(abs(lat - lat1))
+```
+
+求めたインデックスを使って経度と緯度、海面水温の範囲を指定して描きます。
+
+```{r}
+filled.contour(lon[i0:i1], lat[j0:j1], sst[i0:i1,j0:j1])
+```
+
+::: {.callout-note title="練習"}
+経度・緯度をインデックスにするコードを函数にしてみよう。
+好きな海域の海面水温を描いてみよう。
+:::

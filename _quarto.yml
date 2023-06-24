@@ -1,0 +1,36 @@
+project:
+  type: book
+
+book:
+  title: "Rによる気象データサイエンス"
+  author: "榎本剛"
+  date: "2023/6/4"
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - regression.qmd
+    - function.qmd
+    - sst.qmd
+    - frontogenesis.qmd
+    - poisson1d.qmd
+    - quarto.qmd
+    - references.qmd
+  downloads: pdf
+
+bibliography: references.bib
+
+toc: true
+format:
+  html:
+    theme: cosmo
+  pdf:
+    papersize: a4paper
+    keep-tex: true
+    documentclass: bxjsbook
+    classoption:
+      - pandoc
+      - ja=standard
+      - jafont=haranoaji
+pdf-engine: lualatex
+
+

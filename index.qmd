@@ -1,0 +1,21 @@
+# Rによる気象データサイエンス {.unnumbered}
+
+この本ではRを使って気象データの解析や可視化を学びます。本書のURLは <https://www.dpac.dpri.kyoto-u.ac.jp/enomoto/rmetds>です。
+![](rmetds.png)
+
+データサイエンスでは[tidyverse](https://www.tidyverse.org/)でデータを処理し、それに含まれる[ggplot2](https://ggplot2.tidyverse.org/)で可視化することが標準となっており、インターネット上の情報にはtidyverseに基づく解説が多いようです。
+しかし、tidyverseは初心者向きではない[^1]と考えますので、本書ではbase Rを用います。
+
+[^1]: Matloff, N, 2013: [Teaching R in a Kinder, Gentler, More Effective Manner](https://github.com/matloff/TidyverseSkeptic).
+
+## 参考
+
+参考となるサイトを挙げます。
+RとRStudioにはレポートや本を作る機能があるので、たくさんの書籍が作れらており、多くはウェブ上に無料で公開されています。
+Rは1文字だけなので、検索する場合は複数のキーワードを使いましょう。
+
+- 奥村晴彦先生 [統計・データ解析](https://okumuralab.org/~okumura/stat/)
+- 竹中明夫さん [R でプログラミング：データの一括処理とグラフ描き](http://takenaka-akio.org/doc/r_auto/index.html)
+- 増田耕一さん [R による気象データの作図、シミュレーションなど](http://macroscope.world.coocan.jp/ja/edu/compex/r_example.html)
+- [RjpWiki](http://www.okadajp.org/RWiki/)
+- 宋財泫さん・矢内勇生さん[私たちのR](https://www.jaysong.net/RBook/)
