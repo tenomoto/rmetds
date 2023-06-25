@@ -41,9 +41,9 @@ $$
 \end{bmatrix}
 $$
 
-# 実装
+## 実装
 
-## 三重対角行列
+### 三重対角行列
 
 limSolveパッケージの`Solve.tridiag()`を解く場合は次のようになります。
 
@@ -86,7 +86,7 @@ solve.tridiag.thomas <- function(a, b, c, f) {
 }
 ```
 
-## 高速フーリエ変換
+### 高速フーリエ変換
 
 行列の固有値が$\lambda_i=-4\sin^2(i\pi/2n)$であることを用いると、高速フーリエ変換（FFT）を用いて効率的に解くこともできます。 gsignalパッケージの離散sin変換`dst()`とその逆変換`idst()`を持ちいると次のように書けます。
 
@@ -101,9 +101,9 @@ poisson.dst <- function(r) {
 }
 ```
 
-# テスト
+## テスト
 
-## テスト函数
+### テスト函数
 
 $$
 u(x) = x^2 - x^4
@@ -155,9 +155,9 @@ text(0.0, 0.1, paste("l2=", format(l2, digits=3),sep=""), adj=0)
 text(0.0, 0.07, paste("linf=", format(linf, digits=3), sep=""), adj=0)
 ```
 
-# 切断誤差
+## 切断誤差
 
-## 差分法 {.smaller}
+### 差分法 {.smaller}
 
 差分法の誤差を確認しましょう[@LeVeque2007]。 $u(x)$をTalyor展開すると次のようになります。
 
