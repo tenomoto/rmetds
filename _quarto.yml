@@ -13,6 +13,7 @@ book:
     - sst.qmd
     - frontogenesis.qmd
     - poisson1d.qmd
+    - l96.qmd
     - quarto.qmd
     - references.qmd
   downloads: pdf
