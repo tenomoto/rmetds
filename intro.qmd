@@ -68,7 +68,9 @@ plot(df$year, df$co2.global.mean.ppm.)
 グラフにタイトルをつけ、軸のラベルを変更します。タイトルは`main`で、軸ラベルは`xlab`、`ylab`で指定します。
 
 ```{r}
-plot(df$year, df$co2.global.mean.ppm., main="Global Mean CO2 concentration", xlab="year", ylab="CO2 ppm")
+plot(df$year, df$co2.global.mean.ppm.,
+     main="Global Mean CO2 concentration",
+     xlab="year", ylab="CO2 ppm")
 ```
 
 ::: {.callout-note title="練習"}

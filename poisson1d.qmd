@@ -57,10 +57,10 @@ poisson.tridiag <- function(r) {
 }
 ```
 
-三重対角行列を解くThomasの方法[@quarteroni2007, p. 358--359]をRで実装すると次のようになります。
+三重対角行列を解くThomasの方法[@Quarteroni:2007, p. 358--359]をRで実装すると次のようになります。
 
-``` r
-#| code-fold: true
+```{r}
+#| eval: false
 solve.tridiag.thomas <- function(a, b, c, f) {
   n <- length(a)
   al <- rep(0, n)
@@ -84,10 +84,10 @@ solve.tridiag.thomas <- function(a, b, c, f) {
 
 ### 高速フーリエ変換
 
-行列の固有値が$\lambda_i=-4\sin^2(i\pi/2n)$であることを用いると、高速フーリエ変換（FFT）を用いて効率的に解くこともできます。 gsignalパッケージの離散sin変換`dst()`とその逆変換`idst()`を持ちいると次のように書けます。
+行列の固有値が$\lambda_i=-4\sin^2(i\pi/2n)$であることを用いると、高速フーリエ変換（FFT）を用いて効率的に解くこともできます。 gsignalパッケージの離散sin変換`dst()`とその逆変換`idst()`を用いると次のように書けます。
 
-``` r
-#| code-fold: true
+```{r}
+#| eval: false
 library(gsignal)
 
 poisson.dst <- function(r) {
@@ -153,7 +153,7 @@ text(0.0, 0.07, paste("linf=", format(linf, digits=3), sep=""), adj=0)
 
 ### 差分法
 
-差分法の誤差を確認しましょう[@LeVeque2007]。 $u(x)$をTalyor展開すると次のようになります。
+差分法の誤差を確認しましょう[@LeVeque:2007]。 $u(x)$をTalyor展開すると次のようになります。
 
 $$
 \begin{aligned}
@@ -181,7 +181,7 @@ $$
 e(x) = -\frac{1}{12}h[u''(x)+\{u''(0)-u''(1)\}x-u''(0)]
 $$ {#eq-estimated-error} [@eq-test-func,@eq-test-ddfunc]の場合、[@eq-estimated-error]は $$
 e(x) = -h^2x(1-x)
-$$ {#eq-estimated-error-test} となる。
+$$ {#eq-estimated-error-test} となります。
 
 数値誤差と[@eq-estimated-error-test]を比較してみましょう。
 

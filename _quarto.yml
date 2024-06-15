@@ -9,8 +9,11 @@ book:
     - index.qmd
     - intro.qmd
     - regression.qmd
+    - eof.qmd
     - function.qmd
     - sst.qmd
+    - map.qmd
+    - reanalysis.qmd
     - frontogenesis.qmd
     - poisson1d.qmd
     - l96.qmd

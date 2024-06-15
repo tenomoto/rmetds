@@ -39,6 +39,7 @@ sourceボタンをクリックするとスクリプトが実行され、定義�
 下の3行は`plotGravity.R`というファイルに保存しましょう。 
 
 ```{r}
+#| output: false
 pdf("gravity.pdf")
 plot(calc.g, 0, 1e5, xlab="z m", ylab="g")
 dev.off()
