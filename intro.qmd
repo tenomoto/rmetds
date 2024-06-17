@@ -77,8 +77,6 @@ plot(df$year, df$co2.global.mean.ppm.,
 
 次に月平均データ（Global monthly mean mole fractions）を使って簡単な時系列解析をしてみます。
 
-::: {.callout-note title="練習"}
-
 ```{r}
 dfm <- read.csv("co2_monthly_20231115.csv")
 co2.mon <- dfm$mole.fraction.ppm.
@@ -107,7 +105,7 @@ abline(v=1/3)
 
 Rでは、このように対話的な簡単な操作により、簡単に解析やグラフの作成ができます。
 
-:::
+::: {.callout-note title="練習"}
 気象庁は様々なデータをCSV形式で提供しています。 それらをRで読んでみましょう。 うまく読めるでしょうか。
 :::
 
