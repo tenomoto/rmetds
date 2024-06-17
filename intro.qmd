@@ -54,14 +54,16 @@ plot(T, h, type="l")
 
 ## データを読んでみよう
 
-大気の中には主要成分だけでなく、量は少ないが重要な働きをする微量成分があります。 二酸化炭素は人為起源の排出が原因で増加し続けています。 その様子をグラフにしてみましょう。 気象庁のWord Data Centre for Greenhouse Gases <https://gaw.kishou.go.jp/publications/global_mean_mole_fractions>からcsvデータファイルをダウンロードします。
+大気の中には主要成分だけでなく、量は少ないが重要な働きをする微量成分があります。 二酸化炭素は人為起源の排出が原因で増加し続けています。 その様子をグラフにしてみましょう。 気象庁のWord Data Centre for Greenhouse Gases <https://gaw.kishou.go.jp/publications/global_mean_mole_fractions>から年平均csvデータ（Global annual mean mole fractions）のCO2ファイルをダウンロードします。
 
 ```{r}
 df <- read.csv("co2_annual_20221026.csv")
 plot(df$year, df$co2.global.mean.ppm.)
 ```
 
-`read.csv()`はコンマ区切り（CSV, comma separated value）のデータを読む函数です。 ファイル名は文字列であることを表すために`""`で囲みます。 グラフの種類を指定しないと、散布図になります。
+`read.csv()`はコンマ区切り（CSV, comma separated value）のデータを読む函数です。 ファイル名は文字列であることを表すために`""`で囲みます。
+ファイル名の日付の部分は変わります。
+グラフの種類を指定しないと、散布図になります。
 
 `df`には読んだ表の中身が入ります。`df`はデータフレームと呼ばれるクラスのデータ構造です。データフレームは、値が行列に並んでいるだけでなく、行や列に名前がつけられます。
 
@@ -69,14 +71,46 @@ plot(df$year, df$co2.global.mean.ppm.)
 
 ```{r}
 plot(df$year, df$co2.global.mean.ppm.,
-     main="Global Mean CO2 concentration",
+     main="Global mean CO2 concentration",
      xlab="year", ylab="CO2 ppm")
 ```
 
+次に月平均データ（Global monthly mean mole fractions）を使って簡単な時系列解析をしてみます。
+
 ::: {.callout-note title="練習"}
 
+```{r}
+dfm <- read.csv("co2_monthly_20231115.csv")
+co2.mon <- dfm$mole.fraction.ppm.
+n <- nrow(dfm)
+co2.mon <- ts(co2.mon, start=c(dfm$year[1], dfm$month[1]), frequency=12)
+co2.mon.decomp<- decompose(co2.mon)
+plot(co2.mon.decomp)
+```
+`ts()`は一つ目の引数のデータから時系列オブジェクトを作ります。
+`frequency=12`は1年を単位として12回の頻度であることを示します。
+`decompose()`はデータをトレンド、周期成分と残差に分解します。
+
+残差をさらにスペクトル分解してみましょう。
+
+```{r}
+spec.pgram(co2.mon.decomp$random, spans=c(7,7), na.action=na.omit)
+abline(v=1)
+abline(v=1/3)
+```
+`spec.pgram`は高速フーリエ変換を利用して、ピリオドグラムを計算します。
+`spans`で修正ダニエル法に基づいた平滑化を施すことができます。
+右上の青い線は信頼区間を表します。
+`co2.mon.decomp$random`には最初と最後に数値でない値（not a number）を`na`が入っていますので、`na.action`で無視します。
+ピークに近い、周期1年と3年に対応するところに縦線を入れてみました。
+それぞれ年々変動とエルニーニョ現象のような数年周期に対応しているものと考えられます。
+
+Rでは、このように対話的な簡単な操作により、簡単に解析やグラフの作成ができます。
+
+:::
 気象庁は様々なデータをCSV形式で提供しています。 それらをRで読んでみましょう。 うまく読めるでしょうか。
 :::
+
 
 -   [「気象業務はいま2021」CSVデータ一覧](https://www.jma.go.jp/jma/kishou/books/hakusho/2021/csvindex.html)
 -   [台風位置表](https://www.data.jma.go.jp/yoho/typhoon/position_table/index.html)

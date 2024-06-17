@@ -45,18 +45,18 @@ $$ {#eq-lsq.normal}
 
 $$
 \bar{x} = \frac{1}{n}\sum{x_i},\;\bar{y} = \frac{1}{n}\sum{y_i}
-$$ を用いると、[@eq-lsq.normal]の最初の式から
+$$ を用いると、@eq-lsq.normal の最初の式から
 
 $$
 \bar{y} = \beta_0 + \beta_1\bar{x}
-$$ {#eq-lsq.bar}
+$$ {#eq-lsq_bar}
 
 が得られます。 
 $$
-\begin{align}
+\begin{aligned}
   \sum (x_i-\bar{x})\bar{x} &= \bar{x}\sum{x_i} - n\bar{x} = 0\\
   \sum (y_i-\bar{y})\bar{x} &= \bar{x}\sum{y_i} - n\bar{x}\bar{y} = 0
-\end{align}
+\end{aligned}
 $$
 を用いると
 $$
