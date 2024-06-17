@@ -71,3 +71,71 @@ abline(0, 1)                                # <5>
 ::: {.callout-note title="練習"}
 上記のコードをスクリプトにしてみよう。
 :::
+
+## 湿潤大気に関する函数
+
+[@Bolton:1980]や世界気象機関WMO、気象庁などに基づいて、湿潤大気に関する書いてみました。
+
+```{r}
+#| eval: false
+eps <- 0.622
+
+e2q <- function (e, p) {
+  eps*e/(p-(1.0-eps)*e)
+}
+
+q2e <- function(q, p) {
+	p*q/(eps+(1.-eps)*q)
+}
+
+e2w <- function(e, p) {
+	eps*e/(p-e)
+}
+
+calc.es <- function(T) {
+# WMO, JMA
+	exp(19.482-4303.4/(T-29.65))*100
+}
+
+calc.condtemp <- function (T, e){
+#; Bolton (1980)
+#; e(Pa)
+	2840.0/(3.5*log(T)-log(e*0.01)-4.805)+55.0
+}
+
+ttd2q <- function(ttd, T, p) {
+	e2q(calc.es(T-ttd), p)
+}
+
+rh2q <- function (rh, T, p) {
+# T K, rh %
+	e2q(calc.es(T)*0.01*rh, p)
+}
+
+q2ttd <- function(q, T, p) {
+# WMO, JMA
+  T-29.65-4303.4/(19.482-log(q2e(q,p)*0.01))
+}
+
+calc.theta <- function (T, w, p) {
+# Bolton (1980)
+# T(K), w(kg/kg), p(Pa)
+	T*(100000.0/p)^(0.2854*(1.0-0.28*w))
+}
+
+calc.thetae <- function (T, e, p) {
+# Bolton (1980)
+# T(K), e(Pa), p(Pa)
+	w <- e2w(e,p)
+	TL <- calc.condtemp(T, e)
+	calc.theta(T, w, p) * exp((3376.0/TL-2.54)*w*(1.0+0.81*w))
+}
+
+calc.thetaes <- function(T, p) {
+# Bolton (1980)
+# T(K), e=es(T)(Pa), p(Pa)
+	es <- es(T)
+	w <- e2w(es,p)
+	calc.theta(T, w, p) * exp((3376.0/T-2.54)*w*(1.0+0.81*w))
+}
+```
