@@ -19,6 +19,7 @@ book:
     - l96.qmd
     - quarto.qmd
     - references.qmd
+  output-file: "rmetds"
   downloads: pdf
 
 bibliography: references.bib
