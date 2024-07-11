@@ -1,0 +1,78 @@
+# 地図 {#sec-map}
+
+[NaturalEarth](https://www.naturalearthdata.com/)のデータを使って地図を描いてみます。
+
+## 地理情報データ
+
+点を結んだベクトルデータがshp形式で、ラスタ（画像）データがtif形式で提供されています。
+中解像度5千万分の1（1:50m、1 cm $=$ 500 km）自然（Physical）ベクトル形式の中から陸（Land）を使います。
+[Downloads](https://www.naturalearthdata.com/downloads/)から目的のファイルへのリンクを見つけて、展開すると`ne_50m_land`というフォルダができます。
+フォルダごと作業ディレクトリに配置してください。
+
+地理データを扱うライブラリ[terra](https://rspatial.github.io/terra/index.html)を使います。
+`vect()`にshpファイルのパスを与えて読み込み、ベクトルオブジェクト（`SpatVector`）を生成します。
+
+```{r}
+#| warning: false
+library(terra)
+
+lshp <- "ne_50m_land/ne_50m_land.shp"
+l50 <- vect(lshp)
+plot(l50, border="brown", col="bisque", background="lightblue")
+```
+
+陸が多角形として定義されているので、`col`に薄い茶色ビスク`"bisque"`を指定し、背景`background`となる海を水色`"lightblue"`に塗り、境界`border`である海岸線は茶色`"brown"`にしました。
+Rの色の名前は[An overview of color names in R](https://r-graph-gallery.com/42-colors-names.html)を参照してください。
+
+## 描画範囲
+
+描画範囲を日本域に限定してみましょう。
+```{r}
+plot(l50, border="brown", col="bisque", background="lightblue", 
+     ext=ext(120, 150, 20, 50))
+```
+
+## 地図投影
+
+地図投影には[proj](https://proj.org/)が使われています。
+投影したいベクトル座標参照系（crs: coordinate reference system）を指定する文字列を`project()`に与えます。
+投影については、[Projections](https://proj.org/operations/projections/index.html)や
+[](https://download.osgeo.org/proj/OF90-284.pdf)や[@Evenden:1990]を参照してください。
+
+`axes=FALSE`で座標を消し、`ext`で描画範囲を絞ります。
+経線と緯線は`graticule`で引くことができます。
+
+```{r}
+newcrs <- "+proj=stere +lon_0=135e +lat_0=90n"
+l50p <- project(l50, newcrs)
+plot(l50p, axes=FALSE, col="bisque", background="lightblue",
+     ext=ext(-1e+7, 1e7, -1e7, 1e7))
+g <- graticule(30, 30, crs=newcrs)
+plot(g, add=TRUE)
+```
+
+## ベクトルデータの処理
+
+日付変更線を中心した地図を描いてみましょう。
+NaturalEarthのデータの経度は−180°から180°で、本初子午線0°が中心です。
+西半球と東半球を切り取り、西半球の経度を正にずらして、貼り合わせれば良さそうです。
+1. `crop()`で東半球（0°から180°まで）と西半球（−180°から0°まで）をそれぞれ切り取ります。
+2. `shift()`で西半球を360°ずらします。
+3. `rbind()`で二つをくっつけます。
+左端を本初子午線以外にすることができるように、函数にパラメタを与えられるようにし、既定値は0とします。
+```{r}
+shift.lon <- function(v, dlon=0) {
+  e <- crop(v, ext(dlon+0, 180, -90, 90))
+  w <- crop(v, ext(dlon-180, dlon, -90, 90))
+  w <- shift(w, 360)
+  rbind(e, w)
+}
+l50s <- shift.lon(l50)
+plot(l50s, border="brown", col="bisque", background="lightblue")
+```
+よく見るとロシアのチュコト半島と南極に線が入っていますが、日付変更線を重ねると隠れるので気にしないことにします。
+30°Wからの地図も描いてみます。
+```{r}
+l50s <- shift.lon(l50, -30)
+plot(l50s, border="brown", col="bisque", background="lightblue")
+```

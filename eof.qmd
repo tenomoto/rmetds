@@ -1,0 +1,46 @@
+# 主成分分析
+
+主成分分析は，回帰とともによく用いられる統計手法です。主成分分析は，ビッグデータを要約することができます。気象学では経験的直交函数（Empirical Orthogonal Functions, EOF），機械学習では次元削減手法として用いられる特異値分解，様々な分野の数値解析に用いられる固有値解析としても知られています。Rを使って手を動かしながらどのような手法か学んでいきましょう。
+
+## 特異値解析
+
+100個の観測が2組得られたとします。二つの組には何らかの関係があります。ばらつきの大きい方向を特異値解析で求めましょう。
+
+```{r}
+m <- 100
+set.seed(514)
+
+x <- rnorm(m)
+x <- (x - mean(x)) / sd(x)
+y <- x + runif(m)
+y <- (y - mean(y)) / sd(y)
+
+amat <- cbind(x, y)
+usv <- svd(amat)
+v1 <- usv$d[1] * usv$v[, 1] * 0.2
+v2 <- usv$d[2] * usv$v[, 2] * 0.2
+
+plot(x, y, col="gray", pch=16, asp=1)
+arrows(0, 0, v1[1], v1[2], length=0.1, lwd=3, col="red")
+arrows(0, 0, v2[1], v2[2], length=0.1, lwd=3, col="blue")
+```
+
+乱数で`x`を生成し，それを少し乱した`y`を作ります。標準化した後100×2の配列`amat`にまとめます。これを`svd()`で特異値分解をしてばらつきの大きい方向（固有ベクトル）を求めています。●はデータ，→は右特異ベクトルで特異値に比例させています。赤，青はそれぞれ1番目，2番目に分散が大きい方向を表します。
+
+## 特異値解析と固有値解析との関係
+
+ここで，特異値解析と固有値解析との関係についておさらいをしておきます。ここではデータは実数とします。特異値分解は，$m$個のデータ$n$組を並べた$m\times n$行列$\mathbf{X}$を
+
+$$
+\mathbf{X} = \mathbf{USV}^T
+$$ {#eq-svd}
+
+のように分解するものです。$\mathbf{U}$は$m\times m$行列，$\mathbf{S}$は$m\times n$行列，$\mathbf{V}$は$n\times n$行列です。$\mathbf{U}$は左特異ベクトル，$\mathbf{V}$は右特異ベクトルと呼ばれています。特異値は$\mathbf{S}$の対角成分として最大$m$と$n$の小さい方の個数（$p = \min(m, n)$）が得られます。$\mathbf{U}$と$\mathbf{V}$はともに直交行列で$\mathbf{U}^T\mathbf{U}=\mathbf{UU}^T=\mathbf{I}$，$\mathbf{V}^T\mathbf{V}=\mathbf{VV}^T=\mathbf{I}$が成り立ちます。
+
+```{r}
+print(usv$d)
+print(usv$v)
+wv <- eigen(t(amat) %*% amat)
+print(sqrt(wv$values))
+print(wv$vectors)
+```

@@ -1,0 +1,66 @@
+# 大気再解析
+
+terraで格子点値は`SpatRaster`クラスで扱います。
+
+SpatRasterにデータが格納される順序を確認します。
+```{r}
+library(terra)
+
+r <- rast(ncol=12, nrow=6, xmin=0, xmax=360, ymin=-90, ymax=90)
+values(r) <- 1:ncell(r)
+plot(r)
+```
+列方向に連続する行優先で、列は西から東、行は北から南であることが分かります。
+セルに色が付いているので半格子ずれるが、ひとまず目をつぶることにします。
+
+NCEP/NCAR再解析データの海面気圧の月別気候値[slp.mon.ltm.nc](http://database.rish.kyoto-u.ac.jp/arch/ncep/data/ncep.reanalysis.derived/surface/slp.mon.ltm.nc)を取得します。
+
+NetCDFは、[RNetCDF](https://cran.r-project.org/web/packages/RNetCDF/index.html)や[ncdf4](https://cran.r-project.org/web/packages/ncdf4/index.html)で読むことができます。
+terraも`rast()`でNetCDFを読めることになっているが、上記ファイルは読めませんでした。
+
+```{r}
+library(RNetCDF)
+
+nc <- open.nc("slp.mon.ltm.nc")
+slp <- var.get.nc(nc, "slp")
+dim(slp)
+```
+
+変数は`var.get.nc()`で取得します。
+次元は経度、緯度の順で144x73です。
+Rの配列はFortranやMATLABと同じ列優先（左の添え字が先に変わる）なので、`rast()`に渡すときは、転置`t()`する必要があります。
+`SpatRaster`も北から南向きなので、南北は反転しません。
+データと経度を合わせて日付変更線を図の中心にするため、@sec-map で定義した`shift.lon()`を使っています。
+1月の海面気圧を描きましょう。
+
+```{r}
+#|echo: false
+shift.lon <- function(v, dlon=0) {
+  e <- crop(v, ext(dlon+0, 180, -90, 90))
+  w <- crop(v, ext(dlon-180, dlon, -90, 90))
+  w <- shift(w, 360)
+  rbind(e, w)
+}
+```
+```{r}
+slp.ras <- rast(xmin=0, xmax=360, ymin=-90, ymax=90, ncols=144, nrows=73)
+values(slp.ras) <- t(slp[,,1])
+cshp <- "ne_50m_coastline/ne_50m_coastline.shp"
+c50 <- vect(cshp)
+c50 <- shift.lon(c50)
+plot(slp.ras)
+plot(c50, add=TRUE)
+```
+
+```{r}
+slp.ras.c <- crop(slp.ras, ext(0, 360, -30, 90))
+
+newcrs <- "+proj=stere +lon_0=135e +lat_0=90n"
+c50p <- project(c50, newcrs)
+
+slp.ras.p <- project(slp.ras.c, newcrs)
+g <- graticule(30, 30, crs=newcrs)
+plot(slp.ras.p, axes=FALSE, ext=ext(-1e+7, 1e7, -1e7, 1e7))
+plot(c50p, add=TRUE)
+plot(g, add=TRUE)
+```
