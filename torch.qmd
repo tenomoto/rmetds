@@ -1,0 +1,87 @@
+# 機械学習
+
+[PyTorch](https://pytorch.org/)は広く使われている機械学習フレームワークです。
+[Torch for R](https://torch.mlverse.org/)はRからPyTorchのほとんどの機能が利用できます。
+
+ライブラリの名前は`torch`です。install.packages("torch")`インストールしましょう。
+
+## 数値最適化
+
+Torch for Rを解説した本[Deep Learning and Scientific Computing with R torch](https://skeydan.github.io/Deep-Learning-and-Scientific-Computing-with-R-torch/)の[Function minimization with L-BFGS](https://skeydan.github.io/Deep-Learning-and-Scientific-Computing-with-R-torch/optim_2.html)に従って、数値最適化をしてみましょう。
+
+最適化のベンチマーク函数Rosenbrock函数は
+$$
+f(x, y) = (1-x)^2 + 100(y-x^2)^2
+$$
+と書けます。$x$の4次函数となっており、歪んだ溝の中に最小値があります。
+そのため、最急降下法や共軛勾配法では、多くのステップ数を必要とします。
+ニュートン法やガウス・ニュートン法では、少ない回数で最小に到達することが知られています[@Enomoto-Nakashita:2024]。
+
+上記テキストでは、右辺第2項の係数が5になっていて、線型探索なしで2回、ありで1回で最適値に至るとしていますが、ここでは標準的な係数100を使います。
+
+```{r}
+rosenbrock <- function(x, y, a = 1, b = 100) {
+  (a - x)^2 + b * (y - x^2)^2
+}
+```
+
+ここでは、torch for Rを使って、Rosenbrock函数を最適化します。
+最適化手法には、L-BFGS、線型探索には強ウルフ条件を使います。
+制御変数をtorchのテンソルとして定義し、初期位置を与えるとともに、
+勾配を自動微分で求めるために`requries_grad=TRUE`を指定します。
+
+```{r}
+library(torch)
+
+x <- torch_tensor(c(-1, -1), requires_grad = TRUE)
+
+optimizer <- optim_lbfgs(x, line_search_fn = "strong_wolfe")
+```
+
+損失を計算する函数を定義します。勾配を0に初期化して、損失とその勾配を計算します。
+最適化の進捗を確認するため、損失を表示しています。
+この函数は最適化手法の1ステップ`optimizer$step()`に渡します。
+```{r}
+calc_loss <- function() {
+  optimizer$zero_grad()
+  
+  value <- rosenbrock(x[1], x[2])
+  cat("value is:", as.numeric(value), "\n")
+  
+  value$backward()
+  value
+}
+```
+
+3ステップ数まで進み、損失を`xhist`に格納し、`write()`でテキストファイルに保存します。
+ファイルに格納せずに、直接描画しても構いません。
+
+```{r}
+num_iterations <- 3
+xhist <- as.numeric(x)
+for (i in 1:num_iterations) {
+  cat("\n", "iteration:", i, "\n")
+  optimizer$step(calc_loss)
+  cat("x=", as.numeric(x), "\n")
+  xhist <- rbind(xhist, as.numeric(x))
+}
+write(xhist, file = "hist.txt")
+```
+
+2回で最小に至りました。
+テキストファイルに保存した最適化の履歴を読み、Rosenbrockの等値線に重ねて描画します。
+
+```{r}
+#| fig-width: 6
+#| fig-height: 6
+xhist <- matrix(scan("hist.txt"), ncol = 2)
+
+x.axis <- seq(-1, 2, 0.01)
+y.axis <- seq(-1, 2, 0.01)
+z <- outer(x.axis, y.axis, rosenbrock)
+
+contour(x.axis, y.axis, z, levels=4^(0:10), main="R torch L-BFGS",
+        asp=1, xlim=c(-1,2))
+points(xhist[,1], xhist[,2], pch=16)
+lines(xhist[,1], xhist[,2], lwd=3)
+```

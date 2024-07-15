@@ -1,5 +1,9 @@
 # 大気再解析
 
+再解析データとは，比較的新しい予報モデルに対して過去の観測データを同化したものです。 数値天気予報においては，予報モデルに対して観測を同化した解析値が作成され，初期値として用いられています。 予報モデルは改良が重ねられていくため，解析値の品質はモデルの変遷と共に変化していきます。 データ同化手法も大きく進歩し，数十年前とは全く異なる手法が用いられています。 モデルやデータ同化手法の改良の影響を取り除くことにより，時間的により品質が安定したデータセットになります。 再解析とは，現業予報で一度行った解析を再びやり直すということを意味しています。
+
+## ラスタデータ
+
 terraで格子点値は`SpatRaster`クラスで扱います。
 
 SpatRasterにデータが格納される順序を確認します。
@@ -12,6 +16,10 @@ plot(r)
 ```
 列方向に連続する行優先で、列は西から東、行は北から南であることが分かります。
 セルに色が付いているので半格子ずれるが、ひとまず目をつぶることにします。
+
+## 気候値
+
+京都大学生存圏研究所生存圏データベース[グローバル大気観測データ](http://database.rish.kyoto-u.ac.jp/arch/glob-atmos/)では、[NCEP再解析](http://database.rish.kyoto-u.ac.jp/arch/ncep/)を提供しています。月平均/その他の統計処理済データ、surfaceとたどりましょう。
 
 NCEP/NCAR再解析データの海面気圧の月別気候値[slp.mon.ltm.nc](http://database.rish.kyoto-u.ac.jp/arch/ncep/data/ncep.reanalysis.derived/surface/slp.mon.ltm.nc)を取得します。
 
@@ -64,3 +72,39 @@ plot(slp.ras.p, axes=FALSE, ext=ext(-1e+7, 1e7, -1e7, 1e7))
 plot(c50p, add=TRUE)
 plot(g, add=TRUE)
 ```
+::: {.callout-tip title="カラーパレット"}
+色を変えるには、`color.palette`にカラーパレットを生成する函数を与えるか、`col`に明示的に色を与えます。`col`は`color.palette`に優先し、色の数はレベルより一つ少なくします。
+
+- [RColorBrewer](https://cran.r-project.org/web/packages/RColorBrewer/index.html)など、[様々なパレット](https://github.com/EmilHvitfeldt/r-color-palettes)がライブラリとして提供されています。
+- [NCL](https://www.ncl.ucar.edu/)のカラーテーブルは[rcolors](https://cran.r-project.org/web/packages/rcolors/index.html)に収められています。
+
+:::
+
+## 月平均
+
+[NCEP再解析](http://database.rish.kyoto-u.ac.jp/arch/ncep/)の月平均/その他の統計処理済データ、surfaceから、今度は月平均データを取得します。ここでは層厚（1000 hPaと500 hPaの厚さ）[thickness.mon.mean.nc](http://database.rish.kyoto-u.ac.jp/arch/ncep/data/ncep.reanalysis.derived/surface/thickness.mon.mean.nc)を選びました。
+
+特定の年月に対応する番号は次のように求めることができます。
+
+```{r}
+#| eval: false
+library(RNetCDF)
+
+nc <- open.nc("thickness.mon.mean.nc")
+time <- var.get.nc(nc, "time")                        # <1>
+tunit <- att.get.nc(nc, "time", "units")              # <2>
+time.posixct <- utcal.nc(tunit, time, type="c")       # <3>
+ymd <- as.POSIXct(paste(c(1970, 1, 1), collapse="-")) # <4>
+t <- which.min(abs(time.posixct - ymd))               # <5>
+```
+
+1. 変数`time`を取得します。
+2. 時刻の単位を取得します。
+3. RNetCDFの`utcal.nc()`でPOSIXct型に変換します。
+4. `c()`で作った年月日のベクトルを`-`で繋ぎ、POSIXct型に変換します。
+5. `which.min()`で最も小さい番号を求めます。
+
+::: {.callout-note title="練習"}
+
+同じ月について、最近の層厚と数十年前の層厚を比べてみよう。
+:::

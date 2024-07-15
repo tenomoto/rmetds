@@ -57,6 +57,22 @@ filled.contour(1:nj, t, x.hist, nlevel=11,
                ylim=rev(range(t)), xlab="j", ylab="time")
 ```
 
+::: {.callout-tip title="バイナリファイル"}
+`x`をバイナリファイルに保存するには、`writeBin()`を使います。
+```{r}
+#| eval: false
+fname <- file("l96.dat", "wb")
+writeBin(x, fname)
+```
+計算とは別の描画スクリプトでバイナリデータを読むには`readBin()`を使います。
+```{r}
+#| eval: false
+nx <- 40
+nstep <- 100
+x <- readBin("l96.dat", double(), n=nx*nstep)
+```
+:::
+
 縞々の数と向きから、波数は8で位相は時間とともに西に進んでいることが分かります。
 これに対し初期に振幅が大きな場所は時間とともに東に進んでいます。
 このようなふるまいは、定常解$\bar{X}=F$に対する摂動方程式の解で説明できます。

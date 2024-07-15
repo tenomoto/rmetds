@@ -17,6 +17,7 @@ book:
     - frontogenesis.qmd
     - poisson1d.qmd
     - l96.qmd
+    - torch.qmd
     - quarto.qmd
     - references.qmd
   output-file: "rmetds"
