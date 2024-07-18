@@ -84,7 +84,10 @@ plot(g, add=TRUE)
 
 [NCEP再解析](http://database.rish.kyoto-u.ac.jp/arch/ncep/)の月平均/その他の統計処理済データ、surfaceから、今度は月平均データを取得します。ここでは層厚（1000 hPaと500 hPaの厚さ）[thickness.mon.mean.nc](http://database.rish.kyoto-u.ac.jp/arch/ncep/data/ncep.reanalysis.derived/surface/thickness.mon.mean.nc)を選びました。
 
-特定の年月に対応する番号は次のように求めることができます。
+特定の年月に対応する番号は、1948年1月が最初に入っているので、
+`(y - 1948) * 12 + m`で計算できます。
+
+あるいは、日時に関する函数を使って次のように求めることができます。
 
 ```{r}
 #| eval: false

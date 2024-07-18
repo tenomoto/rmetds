@@ -3,11 +3,12 @@
 [PyTorch](https://pytorch.org/)は広く使われている機械学習フレームワークです。
 [Torch for R](https://torch.mlverse.org/)はRからPyTorchのほとんどの機能が利用できます。
 
-ライブラリの名前は`torch`です。install.packages("torch")`インストールしましょう。
+ライブラリの名前は`torch`です。
+`install.packages("torch")`インストールしましょう。
 
 ## 数値最適化
 
-Torch for Rを解説した本[Deep Learning and Scientific Computing with R torch](https://skeydan.github.io/Deep-Learning-and-Scientific-Computing-with-R-torch/)の[Function minimization with L-BFGS](https://skeydan.github.io/Deep-Learning-and-Scientific-Computing-with-R-torch/optim_2.html)に従って、数値最適化をしてみましょう。
+Torch for Rを解説した @Keydana2023 の[Function minimization with L-BFGS](https://skeydan.github.io/Deep-Learning-and-Scientific-Computing-with-R-torch/optim_2.html)に従って、数値最適化をしてみましょう。
 
 最適化のベンチマーク函数Rosenbrock函数は
 $$
