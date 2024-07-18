@@ -6,6 +6,7 @@ SPHREPACKは球面調和函数ライブラリで、[NCAR Classic Library for Geo
 
 `gaqd.f`を使ってガウス緯度を求めてみましょう。
 CやFortranを呼び出すには、まずソースから共有ライブラリを作ります。
+次のコマンドを実行すると、`gaqd.so`ができます。
 
 ```{sh}
 #| eval: false
@@ -13,17 +14,57 @@ CやFortranを呼び出すには、まずソースから共有ライブラリを
 ```
 Base RにはCやFortranを呼び出すためのFFI (Foreign Function Interfance)として、`.C()`と`.Fortran()`があります。
 これらは引数をあらかじめ用意する必要がある上、変数はコピーされるので効率が良くありません。
-ここでは、ライブラリ[`dotCall64`](https://cran.r-project.org/web/packages/dotCall64/index.html)を用います。
+ここでは、ライブラリ[dotCall64](https://cran.r-project.org/web/packages/dotCall64/index.html)を用います。
+dotCall64は、64ビットの整数を扱えるので、2GB以上の配列を扱えます。
+
+コンパイルされた函数を呼び出す`.C64()`は、CもFortranも扱えます。
+引数の型を`double`, `integer`, `int64`から`SIGNATURE`に指定します。
+`INTENT`には、read（読み込み）、read and write（読み書き）、write（書き込み）を意味する`r`、`rw`、`w`が指定できます。
+- `r`は変数を用意する必要がありますが、コンパイルされた函数にポインタ（メモリの場所）が渡されるだけで、コピーはされません。
+- `rw`はRオブジェクトのコピーが生成され、コンパイルされた函数はポインタを受け取ります。
+- `w`に対応する変数は、`vector_dc()`、numeric_dc()`、`integer_dc()`で割り付けることができます。
+これらの仕組みにより、Rオブジェクトの生成を制御できます。
 
 
-## C/C++
+```{R}
+library(dotCall64)
 
-- [Rcpp](https://cran.r-project.org/web/packages/Rcpp/index.html)
-- [RcppParallel](https://cran.r-project.org/web/packages/RcppParallel/index.html)
-- [RcppEigen](https://cran.r-project.org/web/packages/RcppEigen/index.html)
-- [RcppArmadillo](https://cran.r-project.org/web/packages/RcppArmadillo/index.html)
+dyn.load("gaqd.so")
 
+gaqd <- function(nlat) {
+  w <- 0
+  lwork <- 0L
+  gaus <- .C64("gaqd", # <1>
+       c("integer", "double", "double", "double", "integer", "integer"), # <2>
+       nlat, theta = numeric_dc(nlat), wts = numeric_dc(nlat), # <3>
+       w, lwork, ierror= integer_dc(1), # <3>
+       INTENT=c("rw", "w", "w", "r", "r", "w")) # <4>
+  gaus[c(1, 2, 3, 6)]
+}
+```
+
+1. サブルーチンの名前を渡します。
+2. `SIGNATURE`として引数の型を指定します。
+3. ガウス余緯度`theta`と重み`wts`は`numeric_dc()`で長さ`nlat`の倍精度浮動小数点数ベクトルを作っています。エラーコード`ierror`は長さ1の整数ベクトルを作っています。
+4. 返り値に`nlat`を含めるため、`nlat`は`rw`で指定しています。`theta`と`wts`、`w`と`lwork`は、ダミー変数なので`r`とします。
+
+## Rcpp
+
+[Rcpp](https://cran.r-project.org/web/packages/Rcpp/index.html)を使うと、RからC/C++のコードを使えます。
+[RcppParallel](https://cran.r-project.org/web/packages/RcppParallel/index.html): は並列プログラミング、
+[RcppEigen](https://cran.r-project.org/web/packages/RcppEigen/index.html)や
+[RcppArmadillo](https://cran.r-project.org/web/packages/RcppArmadillo/index.html)は線型代数演算を扱うC++ライブラリ[Eigen](https://eigen.tuxfamily.org)と[Armadillo](https://arma.sourceforge.net/)の機能を提供します。
 
 ## Python
 
-[reticulate](https://rstudio.github.io/reticulate/)
+[reticulate](https://rstudio.github.io/reticulate/)を使うと、PythonをRから呼び出すことができます。
+
+例えば、Numpyのnpyファイル`x.npy`を読むには次のようにします。
+
+```{R}
+#| eval: false
+library(reticulate)
+
+np <- import("numpy")
+x <- np$load("x.npy")
+```
