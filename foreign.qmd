@@ -1,0 +1,29 @@
+# 他の言語とのインターフェース
+
+## CとFortran
+
+SPHREPACKは球面調和函数ライブラリで、[NCAR Classic Library for Geophysics](https://github.com/NCAR/NCAR-Classic-Libraries-for-Geophysics)から取得できます。
+
+`gaqd.f`を使ってガウス緯度を求めてみましょう。
+CやFortranを呼び出すには、まずソースから共有ライブラリを作ります。
+
+```{sh}
+#| eval: false
+% R CMD SHLIB gaqd.f
+```
+Base RにはCやFortranを呼び出すためのFFI (Foreign Function Interfance)として、`.C()`と`.Fortran()`があります。
+これらは引数をあらかじめ用意する必要がある上、変数はコピーされるので効率が良くありません。
+ここでは、ライブラリ[`dotCall64`](https://cran.r-project.org/web/packages/dotCall64/index.html)を用います。
+
+
+## C/C++
+
+- [Rcpp](https://cran.r-project.org/web/packages/Rcpp/index.html)
+- [RcppParallel](https://cran.r-project.org/web/packages/RcppParallel/index.html)
+- [RcppEigen](https://cran.r-project.org/web/packages/RcppEigen/index.html)
+- [RcppArmadillo](https://cran.r-project.org/web/packages/RcppArmadillo/index.html)
+
+
+## Python
+
+[reticulate](https://rstudio.github.io/reticulate/)
