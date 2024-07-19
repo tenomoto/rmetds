@@ -18,6 +18,7 @@ book:
     - poisson1d.qmd
     - l96.qmd
     - torch.qmd
+    - foreign.qmd
     - quarto.qmd
     - references.qmd
   output-file: "rmetds"
