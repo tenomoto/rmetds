@@ -75,7 +75,7 @@ plot(g, add=TRUE)
 ::: {.callout-tip title="カラーパレット"}
 色を変えるには、`color.palette`にカラーパレットを生成する函数を与えるか、`col`に明示的に色を与えます。`col`は`color.palette`に優先し、色の数はレベルより一つ少なくします。
 
-- [RColorBrewer](https://cran.r-project.org/web/packages/RColorBrewer/index.html)など、[様々なパレット](https://github.com/EmilHvitfeldt/r-color-palettes)がライブラリとして提供されています。
+- [RColorBrewer](https://cran.r-project.org/web/packages/RColorBrewer/index.html)など、[様々なパレット](https://github.com/EmilHvitfeldt/r-color-palettes)がパッケージとして提供されています。
 - [NCL](https://www.ncl.ucar.edu/)のカラーテーブルは[rcolors](https://cran.r-project.org/web/packages/rcolors/index.html)に収められています。
 
 :::

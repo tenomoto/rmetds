@@ -9,7 +9,7 @@
 [Downloads](https://www.naturalearthdata.com/downloads/)から目的のファイルへのリンクを見つけて、展開すると`ne_50m_land`というフォルダができます。
 フォルダごと作業ディレクトリに配置してください。
 
-地理データを扱うライブラリ[terra](https://rspatial.github.io/terra/index.html)を使います。
+地理データを扱うパッケージ[terra](https://rspatial.github.io/terra/index.html)を使います。
 `vect()`にshpファイルのパスを与えて読み込み、ベクトルオブジェクト（`SpatVector`）を生成します。
 
 ```{r}

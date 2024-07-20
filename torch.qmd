@@ -3,7 +3,7 @@
 [PyTorch](https://pytorch.org/)は広く使われている機械学習フレームワークです。
 [Torch for R](https://torch.mlverse.org/)はRからPyTorchのほとんどの機能が利用できます。
 
-ライブラリの名前は`torch`です。
+パッケージの名前は`torch`です。
 `install.packages("torch")`インストールしましょう。
 
 ## 数値最適化

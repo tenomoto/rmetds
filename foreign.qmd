@@ -14,7 +14,7 @@ CやFortranを呼び出すには、まずソースから共有ライブラリを
 ```
 Base RにはCやFortranを呼び出すためのFFI (Foreign Function Interfance)として、`.C()`と`.Fortran()`があります。
 これらは引数をあらかじめ用意する必要がある上、変数はコピーされるので効率が良くありません。
-ここでは、ライブラリ[dotCall64](https://cran.r-project.org/web/packages/dotCall64/index.html)を用います。
+ここでは、パッケージ[dotCall64](https://cran.r-project.org/web/packages/dotCall64/index.html)を用います。
 dotCall64は、64ビットの整数を扱えるので、2GB以上の配列を扱えます。
 
 コンパイルされた函数を呼び出す`.C64()`は、CもFortranも扱えます。
