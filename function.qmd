@@ -74,7 +74,16 @@ abline(0, 1)                                # <5>
 
 ## 湿潤大気に関する函数
 
-@Bolton:1980 や世界気象機関WMO、気象庁などに基づいて、湿潤大気に関する書いてみました。
+@Bolton:1980 や世界気象機関WMO、気象庁などに基づいて、湿潤大気に関する函数を書いてみました。[gist](https://gist.github.com/tenomoto/ac2c54391a7cf5b9a3339948e5344901)にも掲載しているほか、[met](https://github.com/tenomoto/mettools)に含まれています。
+
+[devtools](https://cran.r-project.org/web/packages/devtools/index.html)をインストールして、
+```{r}
+#| eval: false
+library(devtools)
+install_github("tenomoto/mettools")
+
+```
+とするとインストールされます。
 
 ```{r}
 #| eval: false
@@ -134,7 +143,7 @@ calc.thetae <- function (T, e, p) {
 calc.thetaes <- function(T, p) {
 # Bolton (1980)
 # T(K), e=es(T)(Pa), p(Pa)
-	es <- es(T)
+	es <- calc.es(T)
 	w <- e2w(es,p)
 	calc.theta(T, w, p) * exp((3376.0/T-2.54)*w*(1.0+0.81*w))
 }
