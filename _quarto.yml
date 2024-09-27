@@ -25,11 +25,13 @@ book:
   downloads: pdf
 
 bibliography: references.bib
+csl: american-meteorological-society.csl
 
 toc: true
 format:
   html:
     theme: cosmo
+    css: styles.css
   pdf:
     papersize: a4paper
     keep-tex: true
