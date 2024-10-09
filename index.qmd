@@ -11,15 +11,7 @@ slide-format: revealjs
 
 [^1]: Matloff, N, 2013: [Teaching R in a Kinder, Gentler, More Effective Manner](https://github.com/matloff/TidyverseSkeptic).
 
-<div>
-
-```{=html}
-<iframe class="slide-deck" src="slides/rintro.html"></iframe>
-```
-
-</div>
-
-[スライド](slides/rintro.html){target="_blank"}
+[R紹介スライド](rintro.pdf){target="_blank"}
 
 ## 参考 {.unnumbered}
 
