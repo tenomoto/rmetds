@@ -11,14 +11,6 @@ slide-format: revealjs
 
 [^1]: Matloff, N, 2013: [Teaching R in a Kinder, Gentler, More Effective Manner](https://github.com/matloff/TidyverseSkeptic).
 
-<div>
-
-```{=html}
-<iframe class="slide-deck" src="slides/rintro.html"></iframe>
-```
-
-</div>
-
 
 ## 参考 {.unnumbered}
 
@@ -31,3 +23,4 @@ Rは1文字だけなので、検索する場合は複数のキーワードを使
 - 増田耕一さん [R による気象データの作図、シミュレーションなど](http://macroscope.world.coocan.jp/ja/edu/compex/r_example.html)
 - [RjpWiki](http://www.okadajp.org/RWiki/)
 - 宋財泫さん・矢内勇生さん[私たちのR](https://www.jaysong.net/RBook/)
+- 榎本 [Rを気象研究に使う](https://www.dpac.dpri.kyoto-u.ac.jp/enomoto/rintro.html)
