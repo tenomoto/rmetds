@@ -60,6 +60,15 @@ plot(slp.ras)
 plot(c50, add=TRUE)
 ```
 
+::: {.callout-tip title="カラーパレット"}
+軸のフォントサイズなどのパラメタは`pax`にリストとして指定します。
+同様にカラーバーのパラメタは`plg`に指定します。
+```{r}
+plot(slp.ras, pax=list(cex.axis=2), plg=list(cex=2))
+plot(c50, add=TRUE)
+```
+:::
+
 ```{r}
 slp.ras.c <- crop(slp.ras, ext(0, 360, -30, 90))
 
