@@ -54,7 +54,7 @@ $$ {#eq-lsq_bar}
 が得られます。 
 $$
 \begin{aligned}
-  \sum (x_i-\bar{x})\bar{x} &= \bar{x}\sum{x_i} - n\bar{x} = 0\\
+  \sum (x_i-\bar{x})\bar{x} &= \bar{x}\sum{x_i} - n\bar{x}^2 = 0\\
   \sum (y_i-\bar{y})\bar{x} &= \bar{x}\sum{y_i} - n\bar{x}\bar{y} = 0
 \end{aligned}
 $$
