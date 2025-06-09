@@ -1,0 +1,27 @@
+# 梅雨前線
+
+```{r}
+library(RNetCDF)
+
+ncep.pressure <- "http://psl.noaa.gov/thredds/dodsC/Datasets/ncep.reanalysis/pressure/"
+vname <- "air"
+year <- 2025
+mon <- 6
+day <- 6
+hour <- 12
+plev <- 700
+
+nc <- open.nc(paste0(ncep.pressure, var, ".", year, ".nc"))
+lon <- var.get.nc(nc, "lon")
+lat <- var.get.nc(nc, "lat")
+level <- var.get.nc(nc, "level")
+time <- var.get.nc(nc, "time")
+
+k <- which.min(abs(level - plev))
+tunit <- att.get.nc(nc, "time", "units")
+time.posixct <- utcal.nc(tunit, time, type="c")
+ymdh <- as.POSIXct(paste(paste(year, mon, day, sep ="-"), paste(hour, "00:00", sep=":")), tz="UTC")
+n <- which.min(abs(time.posixct - ymdh))
+var <- var.get.nc(nc, vname, start=c(1, 1, k, n), count=c(-1, -1, 1, 1))
+#close.nc(nc)
+```
