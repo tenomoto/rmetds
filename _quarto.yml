@@ -16,7 +16,6 @@ book:
     - map.qmd
     - reanalysis.qmd
     - frontogenesis.qmd
-    - poisson1d.qmd
     - l96.qmd
     - torch.qmd
     - foreign.qmd

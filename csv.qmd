@@ -32,6 +32,43 @@ co2$datetime <- as.POSIXct(paste(co2$date, co2$time))
 head(co2)
 ```
 
+
+不要な列は`NULL`を代入して削除します。
+
+```{r}
+co2$date <- NULL
+co2$time <- NULL
+```
+
+時間変化をプロットしてみましょう。
+
+```{r}
+plot(co2$datetime, co2$co2, type="l", xlab="Date", ylab="CO2 concentration")
+```
+
+`type="l"`は線グラフを指定します。`xlab`と`ylab`で軸のラベルを指定します。
+
+頻度分布を調べるために、ヒストグラムを描いてみましょう。
+
+```{r}
+hist(co2$co2, breaks=20, main="CO2 concentration histogram", xlab="CO2 concentration")
+```
+
+箱ひげ図を描いてみましょう。
+
+```{r}
+bp <- boxplot(co2$co2, main="CO2 concentration boxplot", ylab="CO2 concentration")
+```
+
+箱は四分位数を表し、箱の中の線は中央値を表します。
+ひげは四分位範囲の1.5倍の範囲を表しその範囲を超える値は外れ値と言います。
+点で示されている外れ値を取り除くには次のようにします。
+
+```{r}
+co2 <- co2[co2$co2 >= bp$stats[1] & co2$co2 <= bp$stats[5], ]
+```
+
+
 ## AMeDAS
 
 過去のAMeDASデータは、気象庁 > 各種データ・資料 > [過去の気象データ・ダウンロード](https://www.data.jma.go.jp/risk/obsdl/index.php)から取得できます。 
@@ -114,6 +151,7 @@ df <- read.csv("co2_annual_20221026.csv")
 plot(df$year, df$co2.global.mean.ppm.)
 ```
 
+
 `read.csv()`はコンマ区切り（CSV, comma separated value）のデータを読む函数です。 ファイル名は文字列であることを表すために`""`で囲みます。 ファイル名の日付の部分は変わります。 グラフの種類を指定しないと、散布図になります。
 
 `df`には読んだ表の中身が入ります。`df`はデータフレームと呼ばれるクラスのデータ構造です。データフレームは、値が行列に並んでいるだけでなく、行や列に名前がつけられます。
@@ -130,13 +168,29 @@ plot(df$year, df$co2.global.mean.ppm.,
 
 ```{r}
 dfm <- read.csv("co2_monthly_20231115.csv")
+```
+
+月毎の平均を求めてみます。
+```{r}
+co2.annual.cycle <- aggregate(mole.fraction.ppm. ~ month, data = dfm, mean)
+co2.annual.cycle
+```
+
+プロットしてみましょう。
+
+```{r}
+plot(co2.annual.cycle)
+```
+
+8月に一番少なく、1月に一番多くなっています。
+
+```{r}
 co2.mon <- dfm$mole.fraction.ppm.
 n <- nrow(dfm)
 co2.mon <- ts(co2.mon, start=c(dfm$year[1], dfm$month[1]), frequency=12)
 co2.mon.decomp<- decompose(co2.mon)
 plot(co2.mon.decomp)
 ```
-
 `ts()`は一つ目の引数のデータから時系列オブジェクトを作ります。 `frequency=12`は1年を単位として12回の頻度であることを示します。 `decompose()`はデータをトレンド、周期成分と残差に分解します。
 
 残差をさらにスペクトル分解してみましょう。
